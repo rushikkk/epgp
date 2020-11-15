@@ -603,6 +603,16 @@ local function AddGPControls(frame)
     function(self)
       if self.obj.open then self.obj.pullout:SetWidth(285) end
     end)
+  dropDown.button_cover:HookScript(
+          "OnMouseDown",
+          function(self)
+            if not self.obj.open then EPGPSideFrameGPDropDown_SetList(self.obj) end
+          end)
+  dropDown.button_cover:HookScript(
+          "OnClick",
+          function(self)
+            if self.obj.open then self.obj.pullout:SetWidth(285) end
+          end)
   dropDown:SetCallback(
     "OnEnter",
     function(self)
@@ -673,11 +683,10 @@ end
 local function EPGPSideFrameEPDropDown_SetList(dropDown)
   local list = {}
   local seen = {}
-  local dungeons = {CalendarEventGetTextures(1)}
-  for i=1,#dungeons,4 do
-    if dungeons[i+2] == GetExpansionLevel() and not seen[dungeons[i]] and dungeons[i+3] ~= "Looking For Raid" then
-      seen[dungeons[i]] = true
-      tinsert(list, dungeons[i])
+  for _,dungeons in ipairs(C_Calendar.EventGetTextures(0)) do
+    if dungeons['expansionLevel'] == GetExpansionLevel() and not seen[dungeons['title']] and dungeons['isLfr'] ~= true then
+      seen[dungeons['title']] = true
+      tinsert(list, dungeons['title'])
     end
   end
   tinsert(list, OTHER)
@@ -734,6 +743,17 @@ local function AddEPControls(frame, withRecurring)
     function(self)
       if self.obj.open then self.obj.pullout:SetWidth(285) end
     end)
+  dropDown.button_cover:HookScript(
+          "OnMouseDown",
+          function(self)
+            if not self.obj.open then EPGPSideFrameEPDropDown_SetList(self.obj) end
+          end)
+  dropDown.button_cover:HookScript(
+          "OnClick",
+          function(self)
+            if self.obj.open then self.obj.pullout:SetWidth(285) end
+          end)
+
 
   local otherLabel =
     frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")

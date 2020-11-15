@@ -631,18 +631,19 @@ local CUSTOM_ITEM_DATA = {
 }
 
 -- Used to add extra GP if the item contains bonus stats
--- generally considered chargeable.
+-- generally considered chargeable. Sockets are very
+-- valuable in early BFA.
 local ITEM_BONUS_GP = {
-  [40]  = 0,  -- avoidance, no material value
-  [41]  = 0,  -- leech, no material value
-  [42]  = 25,  -- speed, arguably useful, so 25 gp
+  [40]  = 50,  -- avoidance
+  [41]  = 50,  -- leech
+  [42]  = 50,  -- speed
   [43]  = 0,  -- indestructible, no material value
-  [523] = 200, -- extra socket
-  [563] = 200, -- extra socket
-  [564] = 200, -- extra socket
-  [565] = 200, -- extra socket
-  [572] = 200, -- extra socket
-  [1808] = 200, -- extra socket
+  [523] = 300, -- extra socket
+  [563] = 300, -- extra socket
+  [564] = 300, -- extra socket
+  [565] = 300, -- extra socket
+  [572] = 300, -- extra socket
+  [1808] = 300, -- extra socket
 }
 
 -- The default quality threshold:
@@ -734,7 +735,8 @@ function lib:GetValue(item)
   -- Check if item is relevant.  Item is automatically relevant if it
   -- is in CUSTOM_ITEM_DATA (as of 6.0, can no longer rely on ilvl alone
   -- for these).
-  if level < 463 and not CUSTOM_ITEM_DATA[itemID] then
+  if level < 339 and not CUSTOM_ITEM_DATA[itemID] then
+    Debug("%s is not relevant.", itemLink)
     return nil, nil, level, rarity, equipLoc
   end
 
@@ -755,9 +757,10 @@ function lib:GetValue(item)
 
   -- Is the item above our minimum threshold?
   if not rarity or rarity < quality_threshold then
+    Debug("%s is below rarity threshold.", itemLink)
     return nil, nil, level, rarity, equipLoc
   end
-  
+
   -- Check if it is a Relic
   if equipLoc == "" and itemSubClass == GetRelicSubClassString() then
     equipLoc = "INVTYPE_RELIC"
@@ -783,7 +786,7 @@ function lib:GetValue(item)
   -- 1000gp.  In 4.2 and higher, we renormalize to make ilvl 378
   -- chests cost 1000.  Repeat ad infinitum!
   local standard_ilvl
-  local ilvl_denominator = 26
+  local ilvl_denominator = 26 -- how much ilevel difference from standard affects cost, higher values mean less effect
   local version = select(4, GetBuildInfo())
   local level_cap = MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()]
   if version < 40200 then
@@ -808,13 +811,18 @@ function lib:GetValue(item)
   elseif version < 70300 then
     standard_ilvl = 915 -- Tomb of Sargeras HC
     ilvl_denominator = 30
-  else
+  elseif version < 80000 then
     standard_ilvl = 945 -- Antorus, the Burning Throne HC
     ilvl_denominator = 30
+  else
+    standard_ilvl = 370 -- Uldir
+    ilvl_denominator = 32
   end
   local multiplier = 1000 * 2 ^ (-standard_ilvl / ilvl_denominator)
   local gp_base = multiplier * 2 ^ (level/ilvl_denominator)
   local high = math.floor(0.5 + gp_base * slot_multiplier1) + extra_gp
   local low = slot_multiplier2 and math.floor(0.5 + gp_base * slot_multiplier2) + extra_gp or nil
+  Debug("%s:%d, %d, %d, %s, %s", itemLink, high, low or 0, level, rarity, equipLoc)
+  Debug("%d, %d, %d",multiplier,gp_base,slot_multiplier1)
   return high, low, level, rarity, equipLoc
 end
