@@ -281,7 +281,7 @@ local function Frame_OnUpdate(self, elapsed)
   end
 
   if state == "STALE_WAITING_FOR_ROSTER_UPDATE" then
-    GuildRoster()
+    C_GuildInfo.GuildRoster()
     return
   end
 
@@ -313,6 +313,7 @@ local function Frame_OnUpdate(self, elapsed)
 
     local name, rank, _, _, _, _, pubNote, note, _, _, class = GetGuildRosterInfo(i)
     -- We use full names including the '-server' portion
+    if not name then print("FUCK: ") end
     local name = Ambiguate(name, "mail")
 
     -- Start of outsiders patch
@@ -455,4 +456,4 @@ end, true)
 
 ForceShowOffline()
 frame:SetScript("OnUpdate", Frame_OnUpdate)
-GuildRoster()
+C_GuildInfo.GuildRoster()
