@@ -1,0 +1,14 @@
+tag 515ecb135ee106906ec4481bfbdfde1912f31cb8 v5.12.17
+Author:	Brizag <vvv444@gmail.com>
+Date:	Sat Sep 16 20:06:55 2017 +0300
+
+Small bug fix release.
+
+commit bc5a7d4596360d4ca237aa536e2413b3459f3735
+Author: Brizag <vvv444@gmail.com>
+Date:   Sat Sep 16 20:05:45 2017 +0300
+
+    Fix PlaySound error in LibDialog.
+    
+    This library was not updated by the author, so for now just fix locally.
+
