@@ -673,11 +673,11 @@ end
 local function EPGPSideFrameEPDropDown_SetList(dropDown)
   local list = {}
   local seen = {}
-  local dungeons = {C_Calendar.EventGetTextures(1)}
-  for i=1,#dungeons,4 do
-    if dungeons[i+2] == GetExpansionLevel() and not seen[dungeons[i]] and dungeons[i+3] ~= "Looking For Raid" then
-      seen[dungeons[i]] = true
-      tinsert(list, dungeons[i])
+  local dungeons = C_Calendar.EventGetTextures(0)
+  for _, dungeon in ipairs(dungeons) do
+    if dungeon['expansionLevel'] == GetExpansionLevel() and not seen[dungeon['title']] and dungeon['isLfr'] == false then
+      seen[dungeon['title']] = true
+      tinsert(list, dungeon['title'])
     end
   end
   tinsert(list, OTHER)
