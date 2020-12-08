@@ -312,8 +312,8 @@ local function Frame_OnUpdate(self, elapsed)
   for i = index, last_index do
 
     local name, rank, _, _, _, _, pubNote, note, _, _, class = GetGuildRosterInfo(i)
+    if not name then return end -- sometimes GetGuildRosterInfo() returns nil (e.g. zoning)
     -- We use full names including the '-server' portion
-    if not name then print("FUCK: ") end
     local name = Ambiguate(name, "mail")
 
     -- Start of outsiders patch
@@ -335,7 +335,7 @@ local function Frame_OnUpdate(self, elapsed)
           holder = name
         end
 
-	Debug("Entry " .. holder .. " is " .. extName)
+	      Debug("Entry " .. holder .. " is " .. extName)
         -- Mark this note as seen
         entry.seen = true
         if entry.note ~= holder then

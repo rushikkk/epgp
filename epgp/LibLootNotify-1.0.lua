@@ -35,7 +35,7 @@ local distributionTimers = {}
 local EMULATE_TIMEOUT = 5
 
 -- coin currency ID
-local currentCurrencyID = nil
+local currentCurrencyID = 830
 
 -- Create a handle for a emulation timer
 local function GenerateDistributionID(player, itemLink, quantity)
@@ -88,7 +88,7 @@ function lib.BonusMessageReceiver(prefix, message, distribution, sender)
 end
 
 local function HandleBonusLootResult(rewardType, rewardLink, rewardQuantity)
-  local numCoins = C_CurrencyInfo.GetCurrencyInfo(currentCurrencyID or 0).quantity
+  local numCoins = C_CurrencyInfo.GetCurrencyInfo(currentCurrencyID or 830)['quantity']
   lib:SendCommMessage("EPGPBONUS", format("BONUS_LOOT_RESULT^%s^%s^%s^%s",
           tostring(rewardType),
           tostring(rewardLink),
@@ -298,7 +298,7 @@ frame:SetScript("OnEvent",
       HandleBonusLootResult(...)
     elseif event == "SPELL_CONFIRMATION_PROMPT" then
       local spellID, confirmType, text, duration, currencyID = ...;
-      if confirmType == CONFIRMATION_PROMPT_BONUS_ROLL then
+      if confirmType == LE_SPELL_CONFIRMATION_PROMPT_TYPE_BONUS_ROLL then
         currentCurrencyID = currencyID
       end
     end
